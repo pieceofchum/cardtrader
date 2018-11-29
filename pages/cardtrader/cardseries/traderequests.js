@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Table } from 'semantic-ui-react';
+import { Button, Table, Segment } from 'semantic-ui-react';
 import { Link } from '../../../routes';
 import Layout from '../../../components/Layout';
 import CardSeries from '../../../ethereum/cardseries';
@@ -42,7 +42,7 @@ class TradeRequestIndex extends Component {
         <Link route={`/cardseries/${this.props.address}`}>
           <a>Back</a>
         </Link>
-        <Table>
+        <Table small>
           <Header>
             <Row>
               <HeaderCell>Owner 1</HeaderCell>
@@ -56,7 +56,7 @@ class TradeRequestIndex extends Component {
             </Row>
           </Header>
           <Body>
-          {this.renderRows()}
+            {this.renderRows()}
           </Body>
         </Table>
         <div>Found {this.props.tradeCount} trade requests.</div>

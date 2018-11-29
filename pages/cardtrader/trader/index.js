@@ -57,7 +57,7 @@ class MyCardSeriesIndex extends Component {
             </Container>
         ),
         description: (
-            <Link route={`/cardseries/${key}`}>
+            <Link route={`/trader/${key}`}>
               <a>View Card Series</a>
             </Link>
         ),
