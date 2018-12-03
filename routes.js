@@ -9,7 +9,8 @@ routes
   .add('/cardseries/traderequests/:address', '/cardtrader/cardseries/traderequests')
   .add('/trader', '/cardtrader/trader/index')
   .add('/trader/:address', '/cardtrader/trader/cards')
-  .add('/traderequest/:address/:cardid', '/cardtrader/trader/traderequests/new');
+  .add('/traderequest/:address/:cardid', '/cardtrader/trader/traderequests/new')
+  .add('/traderequest/:address', '/cardtrader/trader/traderequests/index');
  // .add('/traderequests/requests', '/cardtrader/traderequests/index')
  // .add('/traderequests/requests/new', '/cardtrader/traderequests/new');
 

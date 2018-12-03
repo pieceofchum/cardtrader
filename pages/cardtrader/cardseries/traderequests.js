@@ -42,17 +42,14 @@ class TradeRequestIndex extends Component {
         <Link route={`/cardseries/${this.props.address}`}>
           <a>Back</a>
         </Link>
-        <Table small>
+        <Table>
           <Header>
             <Row>
               <HeaderCell>Owner 1</HeaderCell>
               <HeaderCell>Owner 2</HeaderCell>
               <HeaderCell>CardID 1</HeaderCell>
               <HeaderCell>CardID 2</HeaderCell>
-              <HeaderCell>Owner 1 Approval</HeaderCell>
-              <HeaderCell>Owner 2 Approval</HeaderCell>
-              <HeaderCell>Approved</HeaderCell>
-              <HeaderCell>Completed</HeaderCell>
+              <HeaderCell>Status</HeaderCell>
             </Row>
           </Header>
           <Body>

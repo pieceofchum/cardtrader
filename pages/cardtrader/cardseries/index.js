@@ -6,7 +6,7 @@ import { Link } from '../../../routes';
 
 class CardSeriesIndex extends Component {
   static async getInitialProps() {
-    const cardseries = await factory.methods.deployedCardSeries().call();
+    const cardseries = await factory.methods.getDeployedCardSeries().call();
     console.log(cardseries);
     return { cardseries };
   }

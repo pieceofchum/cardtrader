@@ -7,8 +7,13 @@ import { Link } from '../../../routes';
 import CardSeries from "../../../ethereum/cardseries";
 
 class MyCardSeriesIndex extends Component {
-  static async getInitialProps(props) {
-    const cardSeriesAddresses = await factory.methods.deployedCardSeries().call();
+  state = {
+    mySeries: [],
+    account: 0
+  };
+
+  async loadData() {
+    const cardSeriesAddresses = await factory.methods.getDeployedCardSeries().call();
     const accounts = await web3.eth.getAccounts();
     const account = accounts[0];
 
@@ -17,11 +22,10 @@ class MyCardSeriesIndex extends Component {
     for(var i = 0; i < cardSeriesAddresses.length; i++){
       let cardSeries = CardSeries(cardSeriesAddresses[i]);
       let cards = await cardSeries.methods.getCardsByOwner(account).call();
-      let seriesName = await cardSeries.methods._seriesName.call();
+      let seriesName = await cardSeries.methods.getSeriesName.call();
       const summary = await cardSeries.methods.getSummary().call();
 
       let cardSeriesSummary = {
-        address: props.query.address,
         seriesID: summary[0],
         seriesName: summary[1],
         seriesDescription: summary[2],
@@ -32,19 +36,20 @@ class MyCardSeriesIndex extends Component {
       };
 
       if (cards.length > 0) {
-        //mySeries.push(cardSeriesAddresses[i]);
         mySeries.set(cardSeriesSummary, cardSeriesAddresses[i]);
       }
     }
 
-    console.log(mySeries);
+    this.setState({ mySeries: mySeries, account: account});
+  }
 
-    return { account, mySeries };
+  componentDidMount(){
+    this.loadData();
   }
 
   renderCardSeries() {
     var items = [];
-    this.props.mySeries.forEach((key, value) => {
+    this.state.mySeries.forEach((key, value) => {
       items.push({
         header: (
             <Container>
@@ -66,25 +71,17 @@ class MyCardSeriesIndex extends Component {
       });
     });
 
-    console.log(items);
-
     return <Card.Group items={items}/>;
   }
 
   render() {
-    const { account, mySeries } = this.props;
+    const { mySeries , account} = this.state;
 
     return (
       <Layout>
         <div>
-          <h3>My Card Series</h3>
-          { mySeries.size === 0 ?
-            (
-              <div>No Card Series with cards owned by you were found.</div>
-            )
-            :
-              this.renderCardSeries()
-          }
+          <h3>My Card Series - {account == 0 ? 'Please make sure to login to your MetaMask plug-in':account} </h3>
+          {this.renderCardSeries()}
         </div>
       </Layout>
     )

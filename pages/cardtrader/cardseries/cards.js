@@ -6,12 +6,24 @@ import CardSeries from '../../../ethereum/cardseries';
 import CardRow from '../../../components/CardRow';
 
 class CardIndex extends Component {
+  state = {
+    cardCount: 0,
+    cardIDs: [],
+    cardOwners: []
+  };
+
   static async getInitialProps(props) {
     const { address } = props.query;
+    console.log("Fucker " + address);
+    return { address };
+  }
 
+  async loadData(){
+    const { address } = this.props;
     const cardSeries = CardSeries(address);
 
-    //NEED TO ADD A NEW FUNCTION TO CONTRACT TO RETURN THE CARDS ARRAY
+    console.log("In cards loadData with address of " + address);
+
     const cardIDs = await cardSeries.methods.getAllCards().call();
 
     const cardCount = cardIDs.length;
@@ -24,19 +36,26 @@ class CardIndex extends Component {
 
     console.log(cardIDs);
     console.log(cardOwners);
-    return { address, cardCount, cardIDs, cardOwners };
+    this.setState({ cardCount: cardCount, cardIDs: cardIDs, cardOwners: cardOwners });
+  }
+
+  componentDidMount(){
+    console.log("Bitch");
+    this.loadData();
   }
 
   renderRows() {
-    return this.props.cardIDs.map((cardID, index) => {
-      return <CardRow
-        key={index}
-        id={index}
-        cardID={cardID}
-        cardOwner={this.props.cardOwners[index]}
-        address={this.props.address}
-      />
-    });
+    if (this.state.cardCount > 0) {
+      return this.state.cardIDs.map((cardID, index) => {
+        return <CardRow
+          key={index}
+          id={index}
+          cardID={cardID}
+          cardOwner={this.state.cardOwners[index]}
+          address={this.props.address}
+        />
+      });
+    }
   }
 
   render() {
@@ -46,7 +65,7 @@ class CardIndex extends Component {
       <Layout>
         <h3>Cards</h3>
         <Link route={`/cardseries/${this.props.address}`}>
-          <a>Back</a>
+          <a><Button primary>Back</Button></a>
         </Link>
         <Table>
           <Header>
@@ -68,7 +87,7 @@ class CardIndex extends Component {
               primary/>
           </a>
         </Link>
-        <div>Found {this.props.cardCount} cards.</div>
+        <div>Found {this.state.cardCount} cards.</div>
       </Layout>
     );
   }

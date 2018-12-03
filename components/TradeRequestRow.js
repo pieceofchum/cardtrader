@@ -6,7 +6,10 @@ class TradeRequestRow extends Component {
     const { Row, Cell} = Table;
     const { id, tradeRequest } = this.props;
 
-    console.log(tradeRequest);
+    console.log(tradeRequest.status);
+    //AwaitingApproval=0, Approved, Declined, Completed
+
+    console.log(tradeRequest.status == 2 );
 
     return (
       <Row>
@@ -15,29 +18,13 @@ class TradeRequestRow extends Component {
         <Cell>{tradeRequest.cardID1}</Cell>
         <Cell>{tradeRequest.cardID2}</Cell>
         <Cell>
-          {tradeRequest.owner1Approval ?
-            <Button color={"green"} basic>
-              Approved
-            </Button>
-            : (
-            <Button color={"yellow"} basic>
-              Awaiting Approval
-            </Button>
-          )}
+          {
+            tradeRequest.status == 0 ?
+              'Awaiting Approved' : tradeRequest.status == 1 ?
+              'Approved' : tradeRequest.status == 2 ?
+                'Declined' : 'Completed'
+          }
         </Cell>
-        <Cell>
-          {tradeRequest.owner2Approval ?
-            <Button color={"green"} basic>
-              Approved
-            </Button>
-            : (
-              <Button color={"yellow"} basic>
-                Awaiting Approval
-              </Button>
-            )}
-        </Cell>
-        <Cell>{tradeRequest.approvalComplete}</Cell>
-        <Cell>{tradeRequest.tradeCompleted}</Cell>
       </Row>
     );
   }

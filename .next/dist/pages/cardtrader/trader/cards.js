@@ -61,83 +61,46 @@ var CardTraderHome = function (_Component) {
   (0, _inherits3.default)(CardTraderHome, _Component);
 
   function CardTraderHome() {
+    var _ref;
+
+    var _temp, _this, _ret;
+
     (0, _classCallCheck3.default)(this, CardTraderHome);
 
-    return (0, _possibleConstructorReturn3.default)(this, (CardTraderHome.__proto__ || (0, _getPrototypeOf2.default)(CardTraderHome)).apply(this, arguments));
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = CardTraderHome.__proto__ || (0, _getPrototypeOf2.default)(CardTraderHome)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+      cards: {
+        cardCount: 0,
+        cardIDs: []
+      },
+      account: 0
+    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
   }
 
   (0, _createClass3.default)(CardTraderHome, [{
-    key: 'renderCards',
-    value: function renderCards() {
-      var _this2 = this;
-
-      var items = this.props.cards.cardIDs.map(function (id) {
-        return {
-          image: 'https://react.semantic-ui.com/images/avatar/large/matthew.png',
-          header: 'Card ID: ' + id,
-          extra: _react2.default.createElement(_routes.Link, { route: '/traderequest/' + _this2.props.address + '/' + id, __source: {
-              fileName: _jsxFileName,
-              lineNumber: 31
-            }
-          }, _react2.default.createElement('a', {
-            __source: {
-              fileName: _jsxFileName,
-              lineNumber: 32
-            }
-          }, _react2.default.createElement(_semanticUiReact.Button, {
-            floated: 'right',
-            content: 'Trade',
-            icon: 'add circle',
-            primary: true, __source: {
-              fileName: _jsxFileName,
-              lineNumber: 33
-            }
-          }))),
-          fluid: true
-        };
-      });
-
-      return _react2.default.createElement(_semanticUiReact.Card.Group, { itemsPerRow: 3, items: items, __source: {
-          fileName: _jsxFileName,
-          lineNumber: 46
-        }
-      });
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      return _react2.default.createElement(_Layout2.default, {
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 52
-        }
-      }, _react2.default.createElement('h3', {
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 53
-        }
-      }, 'Cards'), this.renderCards());
-    }
-  }], [{
-    key: 'getInitialProps',
+    key: 'loadData',
     value: function () {
-      var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(props) {
-        var address, accounts, cardSeries, cardIDs, cardCount, cards;
+      var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee() {
+        var address, accounts, account, cardSeries, cardIDs, cardCount, cards;
         return _regenerator2.default.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                address = props.query.address;
+                address = this.props.address;
                 _context.next = 3;
                 return _web2.default.eth.getAccounts();
 
               case 3:
                 accounts = _context.sent;
+                account = accounts[0];
                 cardSeries = (0, _cardseries2.default)(address);
-                _context.next = 7;
-                return cardSeries.methods.getCardsByOwner(accounts[0]).call();
+                _context.next = 8;
+                return cardSeries.methods.getCardsByOwner(account).call();
 
-              case 7:
+              case 8:
                 cardIDs = _context.sent;
                 cardCount = cardIDs.length;
                 cards = {
@@ -145,8 +108,7 @@ var CardTraderHome = function (_Component) {
                   cardIDs: cardIDs
                 };
 
-                console.log(cards);
-                return _context.abrupt('return', { address: address, cards: cards });
+                this.setState({ cards: cards, account: account });
 
               case 12:
               case 'end':
@@ -156,8 +118,123 @@ var CardTraderHome = function (_Component) {
         }, _callee, this);
       }));
 
+      function loadData() {
+        return _ref2.apply(this, arguments);
+      }
+
+      return loadData;
+    }()
+  }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.loadData();
+    }
+  }, {
+    key: 'renderCards',
+    value: function renderCards() {
+      var _this2 = this;
+
+      if (this.state.cards.cardCount > 0) {
+        var items = this.state.cards.cardIDs.map(function (id) {
+          return {
+            image: '/static/' + id + '.jpg',
+            header: 'Card ID: ' + id,
+            extra: _react2.default.createElement(_routes.Link, { route: '/traderequest/' + _this2.props.address + '/' + id, __source: {
+                fileName: _jsxFileName,
+                lineNumber: 49
+              }
+            }, _react2.default.createElement('a', {
+              __source: {
+                fileName: _jsxFileName,
+                lineNumber: 50
+              }
+            }, _react2.default.createElement(_semanticUiReact.Button, {
+              floated: 'right',
+              content: 'Trade',
+              icon: 'add circle',
+              primary: true, __source: {
+                fileName: _jsxFileName,
+                lineNumber: 51
+              }
+            }))),
+            fluid: true
+          };
+        });
+
+        return _react2.default.createElement(_semanticUiReact.Card.Group, { itemsPerRow: 3, items: items, padded: true, __source: {
+            fileName: _jsxFileName,
+            lineNumber: 64
+          }
+        });
+      }
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(_Layout2.default, {
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 71
+        }
+      }, _react2.default.createElement('h3', {
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 72
+        }
+      }, 'Cards for ', this.state.account), _react2.default.createElement(_routes.Link, { route: '/trader', __source: {
+          fileName: _jsxFileName,
+          lineNumber: 73
+        }
+      }, _react2.default.createElement('a', {
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 74
+        }
+      }, _react2.default.createElement(_semanticUiReact.Button, { primary: true, __source: {
+          fileName: _jsxFileName,
+          lineNumber: 74
+        }
+      }, 'Back'))), _react2.default.createElement(_routes.Link, { route: '/traderequest/' + this.props.address, __source: {
+          fileName: _jsxFileName,
+          lineNumber: 76
+        }
+      }, _react2.default.createElement('a', {
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 77
+        }
+      }, _react2.default.createElement(_semanticUiReact.Button, {
+        floated: 'right',
+        content: 'View Trade Requests',
+        icon: 'add circle',
+        primary: true, __source: {
+          fileName: _jsxFileName,
+          lineNumber: 78
+        }
+      }))), this.renderCards());
+    }
+  }], [{
+    key: 'getInitialProps',
+    value: function () {
+      var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(props) {
+        var address;
+        return _regenerator2.default.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                address = props.query.address;
+                return _context2.abrupt('return', { address: address });
+
+              case 2:
+              case 'end':
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this);
+      }));
+
       function getInitialProps(_x) {
-        return _ref.apply(this, arguments);
+        return _ref3.apply(this, arguments);
       }
 
       return getInitialProps;
@@ -168,4 +245,4 @@ var CardTraderHome = function (_Component) {
 }(_react.Component);
 
 exports.default = CardTraderHome;
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInBhZ2VzXFxjYXJkdHJhZGVyXFx0cmFkZXJcXGNhcmRzLmpzIl0sIm5hbWVzIjpbIlJlYWN0IiwiQ29tcG9uZW50Iiwid2ViMyIsIkJ1dHRvbiIsIkNhcmQiLCJMaW5rIiwiTGF5b3V0IiwiQ2FyZFNlcmllcyIsIkNhcmRUcmFkZXJIb21lIiwiaXRlbXMiLCJwcm9wcyIsImNhcmRzIiwiY2FyZElEcyIsIm1hcCIsImltYWdlIiwiaGVhZGVyIiwiaWQiLCJleHRyYSIsImFkZHJlc3MiLCJmbHVpZCIsInJlbmRlckNhcmRzIiwicXVlcnkiLCJldGgiLCJnZXRBY2NvdW50cyIsImFjY291bnRzIiwiY2FyZFNlcmllcyIsIm1ldGhvZHMiLCJnZXRDYXJkc0J5T3duZXIiLCJjYWxsIiwiY2FyZENvdW50IiwibGVuZ3RoIiwiY29uc29sZSIsImxvZyJdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztBQUFBLEFBQU8sQUFBUzs7OztBQUNoQixBQUFPLEFBQVU7Ozs7QUFDakIsQUFBUyxBQUFROztBQUNqQixBQUFTLEFBQVk7O0FBQ3JCLEFBQU8sQUFBWTs7OztBQUNuQixBQUFPLEFBQWdCOzs7Ozs7Ozs7SSxBQUVqQjs7Ozs7Ozs7Ozs7a0NBaUJVO21CQUNaOztVQUFNLGFBQVEsQUFBSyxNQUFMLEFBQVcsTUFBWCxBQUFpQixRQUFqQixBQUF5QixJQUFJLGNBQU0sQUFDL0M7O2lCQUFPLEFBQ0UsQUFDUDtrQkFBUSxjQUZILEFBRWlCLEFBQ3RCO2lDQUNFLEFBQUMsOEJBQUssMEJBQXdCLE9BQUEsQUFBSyxNQUE3QixBQUFtQyxnQkFBekMsQUFBb0Q7d0JBQXBEOzBCQUFBLEFBQ0U7QUFERjtXQUFBLGtCQUNFLGNBQUE7O3dCQUFBOzBCQUFBLEFBQ0U7QUFERjtBQUFBLDZCQUNFLEFBQUM7cUJBQUQsQUFDVSxBQUNSO3FCQUZGLEFBRVUsQUFDUjtrQkFIRixBQUdPLEFBQ0w7cUJBSkY7d0JBQUE7MEJBTkQsQUFJSCxBQUNFLEFBQ0UsQUFRTjtBQVJNO0FBQ0U7aUJBUFYsQUFBTyxBQWNFLEFBRVY7QUFoQlEsQUFDTDtBQUZKLEFBQWMsQUFtQmQsT0FuQmM7OzJDQW9CWixBQUFDLHNCQUFELEFBQU0sU0FBTSxhQUFaLEFBQXlCLEdBQUcsT0FBNUIsQUFBbUM7b0JBQW5DO3NCQURGLEFBQ0UsQUFFSDtBQUZHO09BQUE7Ozs7NkJBSUssQUFDUDs2QkFDRSxBQUFDOztvQkFBRDtzQkFBQSxBQUNFO0FBREY7QUFBQSxPQUFBLGtCQUNFLGNBQUE7O29CQUFBO3NCQUFBO0FBQUE7QUFBQSxTQURGLEFBQ0UsQUFDQyxlQUhMLEFBQ0UsQUFFRyxBQUFLLEFBR1g7Ozs7OzJHLEFBaEQ0Qjs7Ozs7bUJBQ25CO0EsMEJBQVksTSxBQUFNLE1BQWxCLEE7O3VCQUNlLGNBQUEsQUFBSyxJQUFMLEEsQUFBUzs7bUJBQTFCO0Esb0NBRUE7QSw2QkFBYSwwQkFBQSxBLEFBQVc7O3VCQUNSLFdBQUEsQUFBVyxRQUFYLEFBQW1CLGdCQUFnQixTQUFuQyxBQUFtQyxBQUFTLElBQTVDLEEsQUFBZ0Q7O21CQUFoRTtBLG1DQUNBO0EsNEJBQVksUUFBUSxBQUVwQixBO0E7NkJBQVEsQUFDRCxBQUNYOzJCLEFBRlksQUFFSCxBQUVYO0FBSmMsQUFDWjs7d0JBR0YsQUFBUSxJQUFSLEFBQVk7aURBQ0wsRUFBRSxTQUFGLFNBQVcsT0FBWCxBOzs7Ozs7Ozs7Ozs7Ozs7Ozs7O0FBZGtCLEEsQUFvRDdCOztrQkFBQSxBQUFlIiwiZmlsZSI6ImNhcmRzLmpzP2VudHJ5Iiwic291cmNlUm9vdCI6IkM6L1VzZXJzL2RyYXltL3VkZW15LWV0aC9jYXJkdHJhZGVyIn0=
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInBhZ2VzXFxjYXJkdHJhZGVyXFx0cmFkZXJcXGNhcmRzLmpzIl0sIm5hbWVzIjpbIlJlYWN0IiwiQ29tcG9uZW50Iiwid2ViMyIsIkJ1dHRvbiIsIkNhcmQiLCJMaW5rIiwiTGF5b3V0IiwiQ2FyZFNlcmllcyIsIkNhcmRUcmFkZXJIb21lIiwic3RhdGUiLCJjYXJkcyIsImNhcmRDb3VudCIsImNhcmRJRHMiLCJhY2NvdW50IiwiYWRkcmVzcyIsInByb3BzIiwiZXRoIiwiZ2V0QWNjb3VudHMiLCJhY2NvdW50cyIsImNhcmRTZXJpZXMiLCJtZXRob2RzIiwiZ2V0Q2FyZHNCeU93bmVyIiwiY2FsbCIsImxlbmd0aCIsInNldFN0YXRlIiwibG9hZERhdGEiLCJpdGVtcyIsIm1hcCIsImltYWdlIiwiaWQiLCJoZWFkZXIiLCJleHRyYSIsImZsdWlkIiwicmVuZGVyQ2FyZHMiLCJxdWVyeSJdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztBQUFBLEFBQU8sQUFBUzs7OztBQUNoQixBQUFPLEFBQVU7Ozs7QUFDakIsQUFBUyxBQUFROztBQUNqQixBQUFTLEFBQVk7O0FBQ3JCLEFBQU8sQUFBWTs7OztBQUNuQixBQUFPLEFBQWdCOzs7Ozs7Ozs7SSxBQUVqQjs7Ozs7Ozs7Ozs7Ozs7NE4sQUFDSjs7bUJBQ1MsQUFDTSxBQUNYO2lCQUhJLEFBQ0MsQUFFSSxBQUVYO0FBSk8sQUFDTDtlQUZJLEFBS0csQTtBQUxILEFBQ047Ozs7Ozs7Ozs7O21CQWFRO0EsMEJBQVksSyxBQUFLLE0sQUFBakI7O3VCQUNlLGNBQUEsQUFBSyxJQUFMLEFBQVMsQTs7bUJBQTFCO0Esb0NBQ0E7QSwwQkFBVSxTQUFBLEFBQVMsQSxBQUNuQjtBLDZCQUFhLDBCLEFBQUEsQUFBVzs7dUJBQ1IsV0FBQSxBQUFXLFFBQVgsQUFBbUIsZ0JBQW5CLEFBQW1DLFNBQW5DLEEsQUFBNEM7O21CQUE1RDtBLG1DQUNBO0EsNEJBQVksUUFFWixBLEFBRm9CO0E7NkJBRVosQUFDRCxBQUNYOzJCQUZZLEFBRUgsQSxBQUdYO0FBTGMsQUFDWjs7cUJBSUYsQUFBSyxTQUFVLEVBQUMsT0FBRCxBQUFRLE9BQU8sU0FBOUIsQUFBZSxBQUF3Qjs7Ozs7Ozs7Ozs7Ozs7Ozs7O3dDQUd0QixBQUNqQjtXQUFBLEFBQUssQUFDTjs7OztrQ0FFYTttQkFDWjs7VUFBSSxLQUFBLEFBQUssTUFBTCxBQUFXLE1BQVgsQUFBaUIsWUFBckIsQUFBaUMsR0FBRyxBQUNsQztZQUFNLGFBQVEsQUFBSyxNQUFMLEFBQVcsTUFBWCxBQUFpQixRQUFqQixBQUF5QixJQUFJLGNBQU0sQUFDL0M7O21CQUNTLGFBQUEsQUFBYSxLQURmLEFBQ29CLEFBQ3pCO29CQUFRLGNBRkgsQUFFaUIsQUFDdEI7bUNBQ0UsQUFBQyw4QkFBSywwQkFBd0IsT0FBQSxBQUFLLE1BQTdCLEFBQW1DLGdCQUF6QyxBQUFvRDswQkFBcEQ7NEJBQUEsQUFDRTtBQURGO2FBQUEsa0JBQ0UsY0FBQTs7MEJBQUE7NEJBQUEsQUFDRTtBQURGO0FBQUEsK0JBQ0UsQUFBQzt1QkFBRCxBQUNVLEFBQ1I7dUJBRkYsQUFFVSxBQUNSO29CQUhGLEFBR08sQUFDTDt1QkFKRjswQkFBQTs0QkFORCxBQUlILEFBQ0UsQUFDRSxBQVFOO0FBUk07QUFDRTttQkFQVixBQUFPLEFBY0UsQUFFVjtBQWhCUSxBQUNMO0FBRkosQUFBYyxBQW1CZCxTQW5CYzs7NkNBb0JaLEFBQUMsc0JBQUQsQUFBTSxTQUFNLGFBQVosQUFBeUIsR0FBRyxPQUE1QixBQUFtQyxPQUFPLFFBQTFDO3NCQUFBO3dCQURGLEFBQ0UsQUFFSDtBQUZHO1NBQUE7QUFHTDs7Ozs2QkFFUSxBQUNQOzZCQUNFLEFBQUM7O29CQUFEO3NCQUFBLEFBQ0U7QUFERjtBQUFBLE9BQUEsa0JBQ0UsY0FBQTs7b0JBQUE7c0JBQUE7QUFBQTtBQUFBLFNBQWUsbUJBQUEsQUFBSyxNQUR0QixBQUNFLEFBQTBCLEFBQzFCLDBCQUFBLEFBQUMsOEJBQUssT0FBTjtvQkFBQTtzQkFBQSxBQUNFO0FBREY7eUJBQ0UsY0FBQTs7b0JBQUE7c0JBQUEsQUFBRztBQUFIO0FBQUEseUJBQUcsQUFBQyx5Q0FBTyxTQUFSO29CQUFBO3NCQUFBO0FBQUE7U0FIUCxBQUVFLEFBQ0UsQUFBRyxBQUVMLDJCQUFBLEFBQUMsOEJBQUssMEJBQXdCLEtBQUEsQUFBSyxNQUFuQyxBQUF5QztvQkFBekM7c0JBQUEsQUFDRTtBQURGO3lCQUNFLGNBQUE7O29CQUFBO3NCQUFBLEFBQ0U7QUFERjtBQUFBLHlCQUNFLEFBQUM7aUJBQUQsQUFDUSxBQUNSO2lCQUZBLEFBRVEsQUFDUjtjQUhBLEFBR0ssQUFDTDtpQkFKQTtvQkFBQTtzQkFQTixBQUtFLEFBQ0UsQUFDRSxBQU9IO0FBUEc7QUFDQSxpQkFUUixBQUNFLEFBY0csQUFBSyxBQUdYOzs7Ozs2RyxBQXZFNEI7Ozs7O21CQUNuQjtBLDBCQUFZLE0sQUFBTSxNQUFsQixBO2tEQUNELEVBQUUsU0FBRixBOzs7Ozs7Ozs7Ozs7Ozs7Ozs7O0FBWGtCLEEsQUFtRjdCOztrQkFBQSxBQUFlIiwiZmlsZSI6ImNhcmRzLmpzP2VudHJ5Iiwic291cmNlUm9vdCI6IkM6L1VzZXJzL2RyYXltL3VkZW15LWV0aC9jYXJkdHJhZGVyIn0=

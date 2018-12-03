@@ -6,51 +6,82 @@ import Layout from '../../../components/Layout';
 import CardSeries from '../../../ethereum/cardseries';
 
 class CardTraderHome extends Component {
-  static async getInitialProps(props) {
-    const { address } = props.query;
-    const accounts = await web3.eth.getAccounts();
+  state = {
+    cards: {
+      cardCount: 0,
+      cardIDs: []
+    },
+    account: 0
+  };
 
+  static async getInitialProps(props){
+    const { address } = props.query;
+    return { address };
+  }
+
+  async loadData() {
+    const { address } = this.props;
+    const accounts = await web3.eth.getAccounts();
+    const account = accounts[0];
     const cardSeries = CardSeries(address);
-    const cardIDs = await cardSeries.methods.getCardsByOwner(accounts[0]).call();
+    const cardIDs = await cardSeries.methods.getCardsByOwner(account).call();
     const cardCount = cardIDs.length;
 
     const cards = {
       cardCount: cardCount,
       cardIDs: cardIDs
     }
-    console.log(cards);
-    return { address, cards };
+
+    this.setState( {cards: cards, account: account });
+  }
+
+  componentDidMount(){
+    this.loadData();
   }
 
   renderCards() {
-    const items = this.props.cards.cardIDs.map(id => {
-      return {
-        image: 'https://react.semantic-ui.com/images/avatar/large/matthew.png',
-        header: 'Card ID: ' + id,
-        extra: (
-          <Link route={`/traderequest/${this.props.address}/${id}`}>
-            <a>
-              <Button
-                floated="right"
-                content="Trade"
-                icon="add circle"
-                primary/>
-            </a>
-          </Link>
-        ),
-        fluid: true
-      }
-    });
+    if (this.state.cards.cardCount > 0) {
+      const items = this.state.cards.cardIDs.map(id => {
+        return {
+          image: '/static/' + id + '.jpg',
+          header: 'Card ID: ' + id,
+          extra: (
+            <Link route={`/traderequest/${this.props.address}/${id}`}>
+              <a>
+                <Button
+                  floated="right"
+                  content="Trade"
+                  icon="add circle"
+                  primary/>
+              </a>
+            </Link>
+          ),
+          fluid: true
+        }
+      });
 
-    return (
-      <Card.Group itemsPerRow={3} items={items}/>
-    );
+      return (
+        <Card.Group itemsPerRow={3} items={items} padded/>
+      );
+    }
   }
 
   render() {
     return (
       <Layout>
-        <h3>Cards</h3>
+        <h3>Cards for {this.state.account}</h3>
+        <Link route={`/trader`}>
+          <a><Button primary>Back</Button></a>
+        </Link>
+        <Link route={`/traderequest/${this.props.address}`}>
+          <a>
+            <Button
+            floated="right"
+            content="View Trade Requests"
+            icon="add circle"
+            primary/>
+          </a>
+        </Link>
         {this.renderCards()}
       </Layout>
     )

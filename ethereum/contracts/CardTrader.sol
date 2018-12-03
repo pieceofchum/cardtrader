@@ -1,32 +1,31 @@
-pragma solidity ^0.4.17;
+pragma solidity ^0.4.25;
 
 contract CardSeriesFactory {
-    address[] public deployedCardSeries;
-    mapping (uint => bool) public deployedCardSeriesID;
+    address[] private _deployedCardSeries;
+    mapping (uint => bool) private _deployedCardSeriesID;
 
     function createCardSeries(uint seriesID, string seriesName,
                 string seriesDescription) public {
-        require(!deployedCardSeriesID[seriesID]);
+        require(!_deployedCardSeriesID[seriesID]);
         address newCardSeries = new CardSeries(seriesID, seriesName,
                                             seriesDescription, msg.sender);
-        deployedCardSeries.push(newCardSeries);
+        _deployedCardSeries.push(newCardSeries);
     }
 
-    function deployedCardSeries() public view returns(address[]) {
-        return deployedCardSeries;
+    function getDeployedCardSeries() public view returns(address[]) {
+        return _deployedCardSeries;
     }
 }
 
 contract CardSeries {
+    enum TradeStatus { AwaitingApproval, Approved, Declined, Completed }
+
     struct TradeRequest{
         address owner1;
         address owner2;
         uint cardID1;
         uint cardID2;
-        bool approvalComplete;
-        bool owner1Approval;
-        bool owner2Approval;
-        bool tradeCompleted;
+        TradeStatus status;
     }
 
     struct TradeRequestKeys{
@@ -35,24 +34,28 @@ contract CardSeries {
     }
 
     //mapping of key to the trade request
+    //this variable is public in order to
+    //return a TradeRequest structure
+    //which is not supported for functions
     mapping (bytes32 => TradeRequest) public tradeRequestsByKey;
 
     //mapping of key to the trade request
-    mapping (address => TradeRequestKeys) public tradeRequestsByOwner;
+    mapping (address => TradeRequestKeys) private _tradeRequestsByOwner;
 
-    bytes32[] _tradeRequests;
+    // Array of al trade reqeusts in this series
+    bytes32[] private _tradeRequests;
 
     //array of unique card id's
-    uint[] public cards;
+    uint[] private _cards;
 
     //mapping of unique card id's
-    mapping (uint => bool) public _cardsByCardID;
+    mapping (uint => bool) private _cardsByCardID;
 
     //mapping of card id's to owner
     mapping (uint => address) private _ownedCardsByCardID;
 
     //mapping of owner to all cards owned by them
-    mapping (address => uint[]) public _cardsOwnedByAddress;
+    mapping (address => uint[]) private _cardsOwnedByAddress;
 
     //address of the manager of the contract
     address public manager;
@@ -60,70 +63,83 @@ contract CardSeries {
     //a series id that identifies the card
     //campaign which all cards in this contract
     //are part of and can be externally linked
-    uint public _seriesID;
-    string public _seriesName;
-    string public _seriesDescription;
+    uint private _seriesID;
 
+    //Series Name is a human readable and
+    //meaningful name for this series
+    string private _seriesName;
+
+    //A description of the series
+    string private _seriesDescription;
+
+    //Modifier to restrict some functions to the manager
     modifier restricted() {
         require(msg.sender == manager);
         _;
     }
 
-    function CardSeries(uint seriesID, string seriesName,
-                        string seriesDescription, address creator) public {
+    constructor(uint seriesID, string seriesName,
+                        string seriesDescription, address creator)  public {
         manager = creator;
         _seriesID = seriesID;
         _seriesName = seriesName;
         _seriesDescription = seriesDescription;
     }
 
-    function createTradeRequest(address owner1, uint cardID1, address owner2, uint cardID2)
+    function createTradeRequest(uint cardID1, uint cardID2)
             public returns (bytes32) {
 
-        bytes32 key = keccak256(owner1, cardID1, owner2, cardID2);
+        require(msg.sender == getCardOwnerByCardID(cardID1));
+
+        address owner1 = msg.sender;
+        address owner2 = getCardOwnerByCardID(cardID2);
+
+        require(owner1 != owner2);
+
+        uint keyCount = _tradeRequests.length;
+
+        bytes32 key = keccak256(abi.encodePacked(owner1, cardID1, owner2, cardID2, keyCount));
 
         TradeRequest memory newTradeRequest = TradeRequest({
             owner1: owner1,
             owner2: owner2,
             cardID1: cardID1,
             cardID2: cardID2,
-            approvalComplete: false,
-            owner1Approval: false,
-            owner2Approval: false,
-            tradeCompleted: false
+            status: TradeStatus.AwaitingApproval
         });
 
         tradeRequestsByKey[key] = newTradeRequest;
 
-        tradeRequestsByOwner[owner1].keys.push(key);
-        tradeRequestsByOwner[owner1].keyCount++;
-        tradeRequestsByOwner[owner2].keys.push(key);
-        tradeRequestsByOwner[owner2].keyCount++;
+        _tradeRequestsByOwner[owner1].keys.push(key);
+        _tradeRequestsByOwner[owner1].keyCount++;
+        _tradeRequestsByOwner[owner2].keys.push(key);
+        _tradeRequestsByOwner[owner2].keyCount++;
 
         _tradeRequests.push(key);
 
         return key;
     }
 
-    function approveTradeRequest(bytes32 key, address owner) public {
+    function approveTradeRequest(bytes32 key) public {
         TradeRequest storage tradeRequest = tradeRequestsByKey[key];
+        address owner = msg.sender;
 
-        require((tradeRequest.owner1 == owner)||
-                (tradeRequest.owner2 == owner));
+        require(tradeRequest.owner2 == owner);
 
-        if (tradeRequest.owner1 == owner){
-            tradeRequest.owner1Approval = true;
-        }else {
-            tradeRequest.owner2Approval = true;
-        }
-
-        if (tradeRequest.owner1Approval &&
-            tradeRequest.owner2Approval){
-            tradeRequest.approvalComplete = true;
-
-            completeTrade(tradeRequest);
-        }
+        tradeRequest.status = TradeStatus.Approved;
+        completeTrade(tradeRequest);
     }
+
+    function declineTradeRequest(bytes32 key) public {
+        TradeRequest storage tradeRequest = tradeRequestsByKey[key];
+        address owner = msg.sender;
+
+        require((tradeRequest.owner2 == owner) ||
+                (tradeRequest.owner1 == owner));
+
+        tradeRequest.status = TradeStatus.Declined;
+    }
+
 
     function completeTrade(TradeRequest storage tradeRequest) private returns (bool) {
           _ownedCardsByCardID[tradeRequest.cardID1] = tradeRequest.owner2;
@@ -149,20 +165,20 @@ contract CardSeries {
               }
           }
 
-          tradeRequest.tradeCompleted = true ;
+          tradeRequest.status = TradeStatus.Completed ;
     }
 
-    function addCard(uint cardID, address owner) public {
+    function addCard(uint cardID, address owner) restricted public {
         require(!_cardsByCardID[cardID]);
 
         _ownedCardsByCardID[cardID] = owner;
         _cardsByCardID[cardID]=true;
         _cardsOwnedByAddress[owner].push(cardID);
-        cards.push(cardID);
+        _cards.push(cardID);
     }
 
     function getTradeRequestsByOwner(address ownerID) public view returns (bytes32[]) {
-        return tradeRequestsByOwner[ownerID].keys;
+        return _tradeRequestsByOwner[ownerID].keys;
     }
 
     function getAllTradeRequests() public view returns (bytes32[]) {
@@ -170,7 +186,7 @@ contract CardSeries {
     }
 
     function getAllCards() public view returns (uint[]) {
-        return cards;
+        return _cards;
     }
 
     function getCardsByOwner(address ownerID) public view returns (uint[]) {
@@ -189,12 +205,16 @@ contract CardSeries {
         return false;
     }
 
+    function getSeriesName() public view returns (string) {
+        return _seriesName;
+    }
+
     function getSummary() public view returns (uint, string, string, uint, uint, address) {
          return(
           _seriesID,
           _seriesName,
           _seriesDescription,
-          cards.length,
+          _cards.length,
           _tradeRequests.length,
           manager
         );
