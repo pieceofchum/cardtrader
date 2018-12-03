@@ -116,7 +116,7 @@ class TradeRequest extends Component {
   render() {
     return (
       <Layout>
-        <h3>Select Card to Trade For {this.state.account}</h3>
+        <h3>Select Card to Trade For</h3>
         <p>
           <Link route={`/trader/${this.props.address}`}>
             <a><Button primary>Back</Button></a>

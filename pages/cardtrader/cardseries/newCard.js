@@ -61,7 +61,7 @@ class CardNew extends Component {
             />
           </Form.Field>
           <Message error header="Error" content={this.state.errorMessage}/>
-          <Button loading={this.state.loading} primary>Create!</Button>
+          <Button loading={this.state.loading} primary>Create</Button>
         </Form>
       </Layout>
     );

@@ -40,7 +40,7 @@ class CardSeriesIndex extends Component {
                 primary/>
             </a>
           </Link>
-          {this.renderCardSeries()}
+          {this.props.cardseries.length > 0 ? this.renderCardSeries():"No Card Series Found"}
         </div>
       </Layout>
     )
