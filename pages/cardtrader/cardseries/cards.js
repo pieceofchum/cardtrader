@@ -14,7 +14,6 @@ class CardIndex extends Component {
 
   static async getInitialProps(props) {
     const { address } = props.query;
-    console.log("Fucker " + address);
     return { address };
   }
 
@@ -22,10 +21,7 @@ class CardIndex extends Component {
     const { address } = this.props;
     const cardSeries = CardSeries(address);
 
-    console.log("In cards loadData with address of " + address);
-
     const cardIDs = await cardSeries.methods.getAllCards().call();
-
     const cardCount = cardIDs.length;
 
     const cardOwners = await Promise.all(
@@ -40,7 +36,6 @@ class CardIndex extends Component {
   }
 
   componentDidMount(){
-    console.log("Bitch");
     this.loadData();
   }
 

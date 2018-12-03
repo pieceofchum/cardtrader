@@ -18,7 +18,6 @@ class TradeRequestIndex extends Component {
       })
     );
 
-    console.log(tradeRequests);
     return { address, tradeCount, tradeRequests };
   }
 

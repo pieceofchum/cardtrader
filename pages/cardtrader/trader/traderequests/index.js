@@ -4,7 +4,6 @@ import {Link, Router} from '../../../../routes';
 import web3 from '../../../../ethereum/web3';
 import Layout from '../../../../components/Layout';
 import CardSeries from '../../../../ethereum/cardseries';
-//import TradeRequestRowApproval from '../../../../components/TradeRequestRowApproval';
 
 class MyTradeRequests extends Component {
   state = {
@@ -35,8 +34,8 @@ class MyTradeRequests extends Component {
       })
     );
 
-    this.setState( { tradeCount: tradeCount, tradeRequests: tradeRequests,
-                    tradeRequestIDs: tradeRequestIDs, account: account });
+    this.setState( { tradeCount: tradeCount, tradeRequests: tradeRequests.reverse(),
+                    tradeRequestIDs: tradeRequestIDs.reverse(), account: account });
   }
 
   componentDidMount(){
@@ -52,7 +51,6 @@ class MyTradeRequests extends Component {
     try {
       const accounts = await web3.eth.getAccounts();
       const cardSeries = CardSeries(this.props.address);
-      console.log(tradeKey);
 
       await cardSeries.methods
         .approveTradeRequest(tradeKey.valueOf())
@@ -63,6 +61,7 @@ class MyTradeRequests extends Component {
       this.setState({ errorMessage: err.message });
     } finally {
       this.setState({ loading: false });
+      window.location.reload();
     }
   };
 
@@ -85,12 +84,13 @@ class MyTradeRequests extends Component {
     }catch(err) {
       this.setState({ errorMessage: err.message });
     } finally {
-      this.setState({ loading: false });
-      window.location.reload();    }
+      this.setState({loading: false});
+      window.location.reload();
+    }
   };
 
   renderRowDetail (tradeRequest, tradeRequestID) {
-    const { Row, Cell} = Table;
+    const { Row, Cell } = Table;
     const { account } = this.state;
 
     return (

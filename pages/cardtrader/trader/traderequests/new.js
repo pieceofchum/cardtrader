@@ -95,12 +95,12 @@ class TradeRequest extends Component {
 
   renderCards() {
     return (
-      <Grid padded>
+      <Grid>
         <Grid.Row>
-          <Grid.Column width={6} float>
+          <Grid.Column width={6}>
             {this.renderCard(this.props.myCardID)}
           </Grid.Column>
-          <Grid.Column width={6} float>
+          <Grid.Column width={6}>
             <Card>
               {this.renderCarousel()}
               <Card.Content>
@@ -117,9 +117,11 @@ class TradeRequest extends Component {
     return (
       <Layout>
         <h3>Select Card to Trade For {this.state.account}</h3>
-        <Link route={`/trader/${this.props.address}`}>
-          <a><Button primary>Back</Button></a>
-        </Link>
+        <p>
+          <Link route={`/trader/${this.props.address}`}>
+            <a><Button primary>Back</Button></a>
+          </Link>
+        </p>
         <Form onSubmit={ this.onSubmit } error={!!this.state.errorMessage}>
           { this.renderCards() }
           <Message error header="Error" content={this.state.errorMessage}/>

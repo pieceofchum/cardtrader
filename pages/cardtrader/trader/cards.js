@@ -61,7 +61,7 @@ class CardTraderHome extends Component {
       });
 
       return (
-        <Card.Group itemsPerRow={3} items={items} padded/>
+        <Card.Group itemsPerRow={3} items={items}/>
       );
     }
   }
