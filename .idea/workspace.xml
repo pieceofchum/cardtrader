@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="069d2d02-f612-41b3-b307-537b1285967f" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/pages/cardtrader/trader/traderequests/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/pages/cardtrader/trader/traderequests/index.js" afterDir="false" />
-    </list>
+    <list default="true" id="069d2d02-f612-41b3-b307-537b1285967f" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
     <ignored path="$PROJECT_DIR$/tmp/" />
@@ -364,16 +362,15 @@
       <workItem from="1543940469725" duration="397000" />
       <workItem from="1543941084885" duration="66000" />
       <workItem from="1543941165347" duration="9149000" />
-      <workItem from="1543977872739" duration="4687000" />
+      <workItem from="1543977872739" duration="5287000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="185411000" />
+    <option name="totallyTimeSpent" value="186011000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="3920" y="60" width="1753" height="903" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.21141526" />
       <window_info anchor="bottom" id="TODO" order="6" />
