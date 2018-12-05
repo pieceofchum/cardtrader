@@ -11,7 +11,5 @@ routes
   .add('/trader/:address', '/cardtrader/trader/cards')
   .add('/traderequest/:address/:cardid', '/cardtrader/trader/traderequests/new')
   .add('/traderequest/:address', '/cardtrader/trader/traderequests/index');
- // .add('/traderequests/requests', '/cardtrader/traderequests/index')
- // .add('/traderequests/requests/new', '/cardtrader/traderequests/new');
 
 module.exports = routes;

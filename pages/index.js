@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import Layout from '../components/Layout'
 import { Link } from '../routes';
 
+// Component that renders the
+// homepage for the Card Trader Dashboard
 class HomePageIndex extends Component {
   render() {
     return (
@@ -22,9 +24,10 @@ class HomePageIndex extends Component {
               are being created for each of the series they own.
             </p>
             <p>
-              Card Trader also supports card
-              owners. Card owners can view all the Card Series they own cards for, they can drill
-              into each of the Card Series to view they cards they own and make a Trade Request.
+              Card Trader also supports card owners. Card owners can view all the Card Series
+              they own cards for, they can drill into each of the Card Series to view they
+              cards they own and make a Trade Request. All Trade Request must be for Trading
+              Cards within the same Card Series and cross series trades are not supported.
               A Trader Request is made up of the owner (requestor) that wants to trade their card
               and the card they want to trade chosen from a list of cards they don’t already own.
               Once a Trader Request is made the owner of the card that requestor wants to trade for

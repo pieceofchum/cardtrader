@@ -5,6 +5,10 @@ import Layout from '../../../components/Layout';
 import CardSeries from '../../../ethereum/cardseries';
 import CardRow from '../../../components/CardRow';
 
+// Component that lists all the trading cards
+// stored in a Card Series Contract and
+// displays them in a list, also allows
+// Card Series Manager to add new Trading Cards
 class CardIndex extends Component {
   state = {
     cardCount: 0,
@@ -17,6 +21,8 @@ class CardIndex extends Component {
     return { address };
   }
 
+  // Retrieve a list of trading cards and
+  // card owners from the Card Series Contract
   async loadData(){
     const { address } = this.props;
     const cardSeries = CardSeries(address);
@@ -30,8 +36,6 @@ class CardIndex extends Component {
       })
     );
 
-    console.log(cardIDs);
-    console.log(cardOwners);
     this.setState({ cardCount: cardCount, cardIDs: cardIDs, cardOwners: cardOwners });
   }
 

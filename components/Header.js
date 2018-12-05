@@ -1,27 +1,30 @@
-import React from 'react';
-import { Menu } from 'semantic-ui-react';
-import { Link } from '../routes';
+import React, {Component} from 'react';
+import { Menu, Loader } from 'semantic-ui-react';
+import { Link, Router } from '../routes';
 
-export default () => {
-  return(
-    <Menu style={{ marginTop: '10px' }}>
-      <Link route='/'>
-        <a className="item">
+class Header extends Component {
+  onMenuSelect = (event, route) => {
+    event.preventDefault();
+    Router.pushRoute(route);
+  };
+
+  render() {
+    return(
+      <Menu style={{ marginTop: '10px' }}>
+        <a className="item" href="#" onClick={(e) => this.onMenuSelect(e, '/')}>
           CardTrader
         </a>
-      </Link>
-      <Menu.Menu position="right">
-        <Link route='/cardseries'>
-          <a className="item">
+        <Menu.Menu position="right">
+          <a className="item" href="#" onClick={(e) => this.onMenuSelect(e, '/cardseries')}>
             Manage Card Series
           </a>
-        </Link>
-        <Link route="/trader">
-          <a className="item">
+          <a className="item" href="#" onClick={(e) => this.onMenuSelect(e, '/trader')}>
             Card App
           </a>
-        </Link>
-      </Menu.Menu>
-    </Menu>
-  );
-};
+        </Menu.Menu>
+      </Menu>
+    );
+  }
+}
+
+export default Header;

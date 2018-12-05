@@ -5,6 +5,13 @@ import { Link } from '../../../routes';
 import Layout from '../../../components/Layout';
 import CardSeries from '../../../ethereum/cardseries';
 
+// Component that displays all the
+// Trading Cards the current wallet
+// account owns along with a button
+// at the bottom of each card to allow
+// the owner to trade the card for
+// another one within the same
+// Card Series Contract
 class CardTraderHome extends Component {
   state = {
     cards: {
@@ -19,6 +26,9 @@ class CardTraderHome extends Component {
     return { address };
   }
 
+  // Retrieve all the cards owned
+  // by the current account from the
+  // selected Card Series Contract
   async loadData() {
     const { address } = this.props;
     const accounts = await web3.eth.getAccounts();

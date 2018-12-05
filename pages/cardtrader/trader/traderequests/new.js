@@ -6,6 +6,17 @@ import Layout from '../../../../components/Layout';
 import CardSeries from '../../../../ethereum/cardseries';
 import { Carousel } from 'react-responsive-carousel';
 
+// Component for creating a new
+// Trade Request. A user will have
+// already chosen a Trading Card they
+// wish to trade from the Cards screen
+// and clicked the Trade button for that
+// card to get to this screen, a user
+// will be able to choose a Trading Card
+// that they don't already own to trade for.
+// All cards must be from the same Card
+// Series contract and users cannot trade
+// cards across contracts.
 class TradeRequest extends Component {
   state = {
     selCard: 0,
@@ -21,6 +32,11 @@ class TradeRequest extends Component {
     return { address, myCardID: cardid };
   }
 
+  // Retrieve all the cards that are owned by the
+  // current wallet account and the all the cards
+  // stored in the contract and then a list of
+  // cards to trade for is derived from the two
+  // lists
   async loadData() {
     const accounts = await web3.eth.getAccounts();
     const account = accounts[0];

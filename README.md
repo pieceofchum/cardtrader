@@ -1,44 +1,8 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Overview: 
+The Card Trader application is a proof-of-concept (POC) that allows people to trade virtual trading cards. The Card Trader applications supports both card creators and card traders. Card Trader allows card creators to create new Card Series contracts. Card Series contracts are containers that is used to contain cards that are in some way related from the creator’s perspective e.g. “Marvel Villain Trading Cards for 2018”. Once a Card Series contract is created the manager of the Card Series can add new cards to the contract. This does require that the cards are associated with their owners when added. Card Series creators can create many Card Series contracts and they can manage each of them and can see the trading requests that are being created for each of the series they own. Card Trader also supports card owners. Card owners can view all the Card Series they own cards for, they can drill into each of the Card Series to view they cards they own and make a Trade Request. A Trader Request is made up of the owner (requestor) that wants to trade their card and the card they want to trade chosen from a list of cards they don’t already own. Once a Trader Request is made the owner of the card that requestor wants to trade for is found within the card series contract and added as the requestee to the Trade Request.  The requestee can then Approve the trade or Decline the trade. If the requestee approves the trade, then the card ownership is swapped, and the trade is completed. If they decline than the trade is declined, and the cards are not swapped between owners. Once a Trade Request is either approved or declined it is completed and cannot be used further (see Appendix II for a Trade Request Workflow Diagram). 
 
-## Available Scripts
+POC Limitations
+The current Card Trader POC doesn’t support multiple card trades, only one to one card trades are possible. The POC doesn’t support trades across Card Series, so all trading is done within and for the cards stored in a particular Card Series. The POC only has 6 card images so testers of the POC should only create card id’s 1 thru 6, these card id’s will then map to the test trading card images 1.jpg, 2.jpg, etc. 
 
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+Design and Requirements: 
+The Card Trader application is a browser-based client-side application written with React.js and Next.js frameworks and written using the JavaScript language. The Card Trader contracts and blockchain is hosted on the Rinkeby Test Network. All the functionality of the application that utilized an Ethereum blockchain rely on the MetaMask provider. The Card Trader applications requires the latest version of the Chrome browser and the latest version of the MetaMask Chrome Plug-In to work. In order to use the application, you must be logged into your MetaMask wallet. Also the CardTrader application is deployed to a Digital Ocean droplet and to load the client in your browser you will need to go to the following url. 

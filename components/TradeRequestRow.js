@@ -6,11 +6,6 @@ class TradeRequestRow extends Component {
     const { Row, Cell} = Table;
     const { id, tradeRequest } = this.props;
 
-    console.log(tradeRequest.status);
-    //AwaitingApproval=0, Approved, Declined, Completed
-
-    console.log(tradeRequest.status == 2 );
-
     return (
       <Row>
         <Cell>{tradeRequest.owner1}</Cell>

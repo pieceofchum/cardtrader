@@ -5,6 +5,10 @@ import factory from '../../../ethereum/factory';
 import web3 from '../../../ethereum/web3';
 import { Link, Router } from '../../../routes';
 
+// Component to create a new Card Series Contract.
+// Card Series Contracts store trading cards, and
+// allow owners to trade their cards by creating
+// a trade request
 class CardSeriesNew extends Component {
   state = {
     seriesID: '',
@@ -14,20 +18,29 @@ class CardSeriesNew extends Component {
     loading: false
   };
 
+  // Submit new Card Series to the contract
+  // when complete the new Card Series will
+  // be added to the blockchain and the user will
+  // be routed back to the main card series index
   onSubmit = async (event) => {
     event.preventDefault();
 
     this.setState({ loading: true, errorMessage: '' });
 
     try {
+      // Get the provider accounts
       const accounts = await web3.eth.getAccounts();
 
+      // Use the currently selected MetaMask Wallet Account
+      // and attempt to create the Card Series to contract
+      // which will then be stored on the blockchain
       await factory.methods
         .createCardSeries(this.state.seriesID, this.state.seriesName, this.state.seriesDescription)
         .send({
           from: accounts[0]
         });
 
+      // When complete route back to the Card Series Index
       Router.pushRoute('/cardseries');
     }catch(err) {
       this.setState({ errorMessage: err.message });
@@ -42,7 +55,7 @@ class CardSeriesNew extends Component {
         <h3>Create a Card Series</h3>
         <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage}>
           <Form.Field>
-            <label>Series ID</label>
+            <label>Series ID - for this POC please enter an integer between 1 and 6</label>
             <Input
               value={this.state.seriesID}
               onChange={event => this.setState({seriesID: event.target.value})}

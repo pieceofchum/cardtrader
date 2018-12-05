@@ -4,7 +4,17 @@ import Layout from '../../../components/Layout';
 import CardSeries from '../../../ethereum/cardseries';
 import { Link } from '../../../routes'
 
+// Component that shows the details
+// for a particular Card Series
 class CardSeriesShow extends Component {
+  state = {
+    loadingCards: false,
+    loadingRequests: false
+  };
+
+  // Retrieve a summery of the state
+  // for a particular Card Series from
+  // the Card Series Contract
   static async getInitialProps(props) {
     const cardseries = CardSeries(props.query.address);
     const summary = await cardseries.methods.getSummary().call();
@@ -19,6 +29,14 @@ class CardSeriesShow extends Component {
       manager: summary[5]
     };
   }
+
+  onRequestsClick = () => {
+    this.setState({ loadingRequests: true })
+  };
+
+  onCardsClick = () => {
+    this.setState({ loadingCards: true })
+  };
 
   renderCards() {
     const {
@@ -70,7 +88,10 @@ class CardSeriesShow extends Component {
     return (
       <Layout>
         <h3>Card Series Details</h3>
-        <Grid width={10}>
+        <Link route={'/cardseries'}>
+          <a><Button primary>Back</Button></a>
+        </Link>
+        <Grid width={10} padded>
           <Grid.Row>
             <Grid.Column>
               {this.renderCards()}
@@ -80,14 +101,18 @@ class CardSeriesShow extends Component {
             <Grid.Column width={3}>
               <Link route={`/cardseries/traderequests/${this.props.address}`}>
                 <a>
-                  <Button primary>View Trade Requests</Button>
+                  <Button primary
+                          loading={this.state.loadingRequests}
+                          onClick={this.onRequestsClick}>View Trade Requests</Button>
                 </a>
               </Link>
             </Grid.Column>
             <Grid.Column width={3}>
               <Link route={`/cardseries/cards/${this.props.address}`}>
                 <a>
-                  <Button primary>View Cards</Button>
+                  <Button primary
+                            loading={this.state.loadingCards}
+                            onClick={this.onCardsClick}>View Cards</Button>
                 </a>
               </Link>
             </Grid.Column>

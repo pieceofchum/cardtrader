@@ -1,11 +1,22 @@
 import React, { Component } from 'react';
-import { Button, Table, Segment } from 'semantic-ui-react';
+import { Button, Table } from 'semantic-ui-react';
 import { Link } from '../../../routes';
 import Layout from '../../../components/Layout';
 import CardSeries from '../../../ethereum/cardseries';
 import TradeRequestRow from '../../../components/TradeRequestRow';
 
+// Component that displays all the
+// Trade Requests that have been
+// submitted within the current
+// Card Series Contract, this is
+// a read-only view and managers c
+// cannot edit/approve/decline a
+// Trade Request
 class TradeRequestIndex extends Component {
+
+  // Retrieve the Trade Requests that
+  // are stored in the selected
+  // Card Series Contract
   static async getInitialProps(props) {
     const { address } = props.query;
     const cardSeries = CardSeries(address);
@@ -39,7 +50,7 @@ class TradeRequestIndex extends Component {
       <Layout>
         <h3>Trade Requests</h3>
         <Link route={`/cardseries/${this.props.address}`}>
-          <a>Back</a>
+          <a><Button primary>Back</Button></a>
         </Link>
         <Table>
           <Header>

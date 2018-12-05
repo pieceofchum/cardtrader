@@ -5,6 +5,12 @@ import web3 from '../../../../ethereum/web3';
 import Layout from '../../../../components/Layout';
 import CardSeries from '../../../../ethereum/cardseries';
 
+// Component that displays all the
+// Trade Requests for the current
+// wallet account and for the selected
+// Card Series Contract, if the user is
+// a Requestee they will also be able to
+// approve or decline the request
 class MyTradeRequests extends Component {
   state = {
     tradeCount: 0,
@@ -20,6 +26,9 @@ class MyTradeRequests extends Component {
     return { address };
   }
 
+  // Load all the Trade Requests for
+  // the current provider wallet account
+  // and for the selected Card Series Contract
   async loadData() {
     const { address } = this.props;
     const cardSeries = CardSeries(address);
@@ -42,6 +51,10 @@ class MyTradeRequests extends Component {
     this.loadData();
   }
 
+  // Function that allows the user to
+  // approve a Trade Request where
+  // they own the Trading Card that
+  // another user wants to trade for
   approve = async (event) => {
     event.preventDefault();
 
@@ -65,6 +78,10 @@ class MyTradeRequests extends Component {
     }
   };
 
+  // Function that allows the user to
+  // decline a Trade Request where
+  // they own the Trading Card that
+  // another user wants to trade for
   decline = async (event) => {
     event.preventDefault();
 
@@ -89,6 +106,10 @@ class MyTradeRequests extends Component {
     }
   };
 
+  // Render the Trade Request list and
+  // for each request where the current
+  // account is the requestee show both
+  // the Approve and Decline buttons
   renderRowDetail (tradeRequest, tradeRequestID) {
     const { Row, Cell } = Table;
     const { account } = this.state;

@@ -5,6 +5,9 @@ import CardSeries from '../../../ethereum/cardseries';
 import web3 from '../../../ethereum/web3';
 import { Link, Router } from '../../../routes';
 
+// Component to add trading cards to
+// a Card Series maintained by the
+// Card Series Factory
 class CardNew extends Component {
   state = {
     cardID: '',
@@ -18,6 +21,13 @@ class CardNew extends Component {
     return { address };
   }
 
+  // Collect data on the web form and
+  // attempt to add the data to create
+  // a new card for a specific Card Series
+  // Contract, when complete the new card
+  // will be added to the blockchain and
+  // the end user will be routed back to
+  // the card list for the card series
   onSubmit = async (event) => {
     event.preventDefault();
 
