@@ -100,7 +100,6 @@ class MyTradeRequests extends Component {
     try {
       const accounts = await web3.eth.getAccounts();
       const cardSeries = CardSeries(this.props.address);
-      console.log(tradeKey);
 
       await cardSeries.methods
         .declineTradeRequest(tradeKey.valueOf())
