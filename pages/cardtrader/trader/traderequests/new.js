@@ -38,15 +38,21 @@ class TradeRequest extends Component {
   // cards to trade for is derived from the two
   // lists
   async loadData() {
-    const accounts = await web3.eth.getAccounts();
-    const account = accounts[0];
-    const cardSeries = CardSeries(this.props.address);
-    const myCardIDs = await cardSeries.methods.getCardsByOwner(account).call();
-    const cardCount = myCardIDs.length;
-    const allCards = await cardSeries.methods.getAllCards().call();
-    const cardChoices  = allCards.filter( ( card ) => !myCardIDs.includes( card ) );
+    this.setState({ errorMessage: '' });
 
-    this.setState( { cardCount: cardCount, cardChoices: cardChoices, account: account } );
+    try {
+      const accounts = await web3.eth.getAccounts();
+      const account = accounts[0];
+      const cardSeries = CardSeries(this.props.address);
+      const myCardIDs = await cardSeries.methods.getCardsByOwner(account).call();
+      const cardCount = myCardIDs.length;
+      const allCards = await cardSeries.methods.getAllCards().call();
+      const cardChoices  = allCards.filter( ( card ) => !myCardIDs.includes( card ) );
+
+      this.setState( { cardCount: cardCount, cardChoices: cardChoices, account: account } );
+    } catch(err) {
+      this.setState({errorMessage: err.message});
+    }
   }
 
   componentDidMount(){

@@ -18,7 +18,8 @@ class MyTradeRequests extends Component {
     tradeRequestIDs: [],
     account: 0,
     errorMessage: '',
-    loading: false
+    loadingApprove: false,
+    loadingDecline: false
   };
 
   static async getInitialProps(props) {
@@ -30,21 +31,29 @@ class MyTradeRequests extends Component {
   // the current provider wallet account
   // and for the selected Card Series Contract
   async loadData() {
-    const { address } = this.props;
-    const cardSeries = CardSeries(address);
-    const accounts = await web3.eth.getAccounts();
-    const account = accounts[0];
-    const tradeRequestIDs = await cardSeries.methods.getTradeRequestsByOwner(account).call();
-    const tradeCount = tradeRequestIDs.length;
+    this.setState({ errorMessage: '' });
 
-    const tradeRequests = await Promise.all(
-      Array(parseInt(tradeCount)).fill().map((element, index) => {
-        return cardSeries.methods.tradeRequestsByKey(tradeRequestIDs[index]).call();
-      })
-    );
+    try {
+      const {address} = this.props;
+      const cardSeries = CardSeries(address);
+      const accounts = await web3.eth.getAccounts();
+      const account = accounts[0];
+      const tradeRequestIDs = await cardSeries.methods.getTradeRequestsByOwner(account).call();
+      const tradeCount = tradeRequestIDs.length;
 
-    this.setState( { tradeCount: tradeCount, tradeRequests: tradeRequests.reverse(),
-                    tradeRequestIDs: tradeRequestIDs.reverse(), account: account });
+      const tradeRequests = await Promise.all(
+        Array(parseInt(tradeCount)).fill().map((element, index) => {
+          return cardSeries.methods.tradeRequestsByKey(tradeRequestIDs[index]).call();
+        })
+      );
+
+      this.setState({
+        tradeCount: tradeCount, tradeRequests: tradeRequests.reverse(),
+        tradeRequestIDs: tradeRequestIDs.reverse(), account: account
+      });
+    }catch(err) {
+      this.setState({ errorMessage: err.message });
+    }
   }
 
   componentDidMount(){
@@ -58,7 +67,7 @@ class MyTradeRequests extends Component {
   approve = async (event) => {
     event.preventDefault();
 
-    this.setState({ loading: true, errorMessage: '' });
+    this.setState({ loadingApprove: true, errorMessage: '' });
     var tradeKey = new String(event.target.value);
 
     try {
@@ -73,7 +82,7 @@ class MyTradeRequests extends Component {
     }catch(err) {
       this.setState({ errorMessage: err.message });
     } finally {
-      this.setState({ loading: false });
+      this.setState({ loadingApprove: false });
       window.location.reload();
     }
   };
@@ -85,7 +94,7 @@ class MyTradeRequests extends Component {
   decline = async (event) => {
     event.preventDefault();
 
-    this.setState({ loading: true, errorMessage: '' });
+    this.setState({ loadingDecline: true, errorMessage: '' });
     var tradeKey = new String(event.target.value);
 
     try {
@@ -101,7 +110,7 @@ class MyTradeRequests extends Component {
     }catch(err) {
       this.setState({ errorMessage: err.message });
     } finally {
-      this.setState({loading: false});
+      this.setState({loadingDecline: false});
       window.location.reload();
     }
   };
@@ -130,14 +139,14 @@ class MyTradeRequests extends Component {
                   <div>
                     <Button basic
                             color='green'
-                            loading={this.state.loading}
+                            loading={this.state.loadingApprove}
                             onClick={this.approve}
                             value={tradeRequestID}>
                       Approve
                     </Button>
                     <Button basic
                             color='red'
-                            loading={this.state.loading}
+                            loading={this.state.loadingDecline}
                             onClick={this.decline}
                             value={tradeRequestID}>
                       Decline
@@ -155,7 +164,6 @@ class MyTradeRequests extends Component {
   }
 
   renderRows() {
-    console.log("What the hell " + this.state.tradeCount);
     if (this.state.tradeCount > 0) {
       return this.state.tradeRequests.map((tradeRequest, index) => {
         return this.renderRowDetail(tradeRequest, this.state.tradeRequestIDs[index]);

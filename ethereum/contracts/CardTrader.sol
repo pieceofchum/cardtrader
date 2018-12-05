@@ -124,7 +124,7 @@ contract CardSeries {
     function createTradeRequest(uint cardID1, uint cardID2)
             public returns (bytes32) {
 
-        // check that the owner of the card is also he caller
+        // check that the owner of the card is also the caller
         require(msg.sender == getCardOwnerByCardID(cardID1));
 
         address owner1 = msg.sender;

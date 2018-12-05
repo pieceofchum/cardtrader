@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Table } from 'semantic-ui-react';
+import { Button, Table, Message } from 'semantic-ui-react';
 import { Link } from '../../../routes';
 import Layout from '../../../components/Layout';
 import CardSeries from '../../../ethereum/cardseries';
@@ -13,7 +13,8 @@ class CardIndex extends Component {
   state = {
     cardCount: 0,
     cardIDs: [],
-    cardOwners: []
+    cardOwners: [],
+    errorMessage: ''
   };
 
   static async getInitialProps(props) {
@@ -23,20 +24,26 @@ class CardIndex extends Component {
 
   // Retrieve a list of trading cards and
   // card owners from the Card Series Contract
-  async loadData(){
-    const { address } = this.props;
-    const cardSeries = CardSeries(address);
+  async loadData() {
+    this.setState({errorMessage: ''});
 
-    const cardIDs = await cardSeries.methods.getAllCards().call();
-    const cardCount = cardIDs.length;
+    try {
+      const {address} = this.props;
+      const cardSeries = CardSeries(address);
 
-    const cardOwners = await Promise.all(
-      Array(parseInt(cardCount)).fill().map((element, index) => {
-        return cardSeries.methods.getCardOwnerByCardID(cardIDs[index]).call();
-      })
-    );
+      const cardIDs = await cardSeries.methods.getAllCards().call();
+      const cardCount = cardIDs.length;
 
-    this.setState({ cardCount: cardCount, cardIDs: cardIDs, cardOwners: cardOwners });
+      const cardOwners = await Promise.all(
+        Array(parseInt(cardCount)).fill().map((element, index) => {
+          return cardSeries.methods.getCardOwnerByCardID(cardIDs[index]).call();
+        })
+      );
+
+      this.setState({cardCount: cardCount, cardIDs: cardIDs, cardOwners: cardOwners});
+    } catch(err) {
+      this.setState({errorMessage: err.message});
+    }
   }
 
   componentDidMount(){
@@ -66,6 +73,13 @@ class CardIndex extends Component {
         <Link route={`/cardseries/${this.props.address}`}>
           <a><Button primary>Back</Button></a>
         </Link>
+        {
+          !!this.state.errorMessage ?
+            <Message error
+                     header="Error"
+                     content={this.state.errorMessage}/>
+            :''
+        }
         <Table>
           <Header>
             <Row>

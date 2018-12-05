@@ -30,19 +30,25 @@ class CardTraderHome extends Component {
   // by the current account from the
   // selected Card Series Contract
   async loadData() {
-    const { address } = this.props;
-    const accounts = await web3.eth.getAccounts();
-    const account = accounts[0];
-    const cardSeries = CardSeries(address);
-    const cardIDs = await cardSeries.methods.getCardsByOwner(account).call();
-    const cardCount = cardIDs.length;
+    this.setState({ errorMessage: '' });
 
-    const cards = {
-      cardCount: cardCount,
-      cardIDs: cardIDs
+    try {
+      const { address } = this.props;
+      const accounts = await web3.eth.getAccounts();
+      const account = accounts[0];
+      const cardSeries = CardSeries(address);
+      const cardIDs = await cardSeries.methods.getCardsByOwner(account).call();
+      const cardCount = cardIDs.length;
+
+      const cards = {
+        cardCount: cardCount,
+        cardIDs: cardIDs
+      }
+
+      this.setState( {cards: cards, account: account });
+    } catch(err) {
+      this.setState({errorMessage: err.message});
     }
-
-    this.setState( {cards: cards, account: account });
   }
 
   componentDidMount(){
